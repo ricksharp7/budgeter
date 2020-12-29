@@ -16,7 +16,7 @@ let app = document.getElementById('app')
 
 new Vue({
   metaInfo: {
-    titleTemplate: (title) => title ? `${title} - Budgeter` : 'Budgeter'
+    titleTemplate: (title) => title ? `${title} | Budgeter` : 'Budgeter'
   },
   render: h => h(App, {
     props: {
