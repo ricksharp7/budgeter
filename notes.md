@@ -15,4 +15,5 @@ touch database/database.sqlite
 yarn add tailwindcss@npm:@tailwindcss/postcss7-compat @tailwindcss/postcss7-compat postcss@^7 autoprefixer@^9 --dev
 npx tailwindcss init
 yarn add -D mix-tailwindcss laravel-mix-purgecss --dev
+yarn add -D stylelint-config-recommended
 ```
