@@ -12,4 +12,7 @@ php artisan ui vue
 yarn
 touch database/database.sqlite
 @babel/plugin-syntax-dynamic-import
+yarn add tailwindcss@npm:@tailwindcss/postcss7-compat @tailwindcss/postcss7-compat postcss@^7 autoprefixer@^9 --dev
+npx tailwindcss init
+yarn add -D mix-tailwindcss laravel-mix-purgecss --dev
 ```

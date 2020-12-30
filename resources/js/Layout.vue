@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-        <div style="font-size:24pt;font-weight:bold;">
+        <div class="pb-8 text-2xl">
             <slot name="header"></slot>
         </div>
     </header>
