@@ -8,4 +8,13 @@
     body,html{
         font-family: Nunito, sans-serif, system-ui;
     }
+
+    table.list-table thead th{
+        @apply bg-blue-400;
+    }
+
+    table.list-table tbody tr:nth-child(odd) {
+        @apply bg-blue-100;
+        font-weight:bold;
+    }
 }

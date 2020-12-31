@@ -1,7 +1,7 @@
 <template>
   <div>
-    <header>
-        <div class="pb-8 text-2xl">
+    <header class="p-4">
+        <div class="text-3xl">
             <slot name="header"></slot>
         </div>
     </header>

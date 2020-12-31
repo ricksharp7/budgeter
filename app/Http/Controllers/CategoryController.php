@@ -16,7 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         return Inertia::render('Categories/Index', [
-            'categories' => Category::all()->map(function ($category) {
+            'categories' => Category::orderBy('name')->get()->map(function ($category) {
                 return [
                     'id' => $category->id,
                     'name' => $category->name,
