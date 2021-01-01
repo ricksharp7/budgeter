@@ -16,4 +16,5 @@ yarn add tailwindcss@npm:@tailwindcss/postcss7-compat @tailwindcss/postcss7-comp
 npx tailwindcss init
 yarn add -D mix-tailwindcss laravel-mix-purgecss --dev
 yarn add -D stylelint-config-recommended
+composer require --dev laravel/dusk
 ```
