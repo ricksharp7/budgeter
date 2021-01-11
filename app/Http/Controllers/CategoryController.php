@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
@@ -77,7 +78,12 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $category->update(
+            $request->validate([
+                'name' => ['required', 'min:2', 'max:128']
+            ])
+        );
+        return Redirect::route('categories.index');
     }
 
     /**

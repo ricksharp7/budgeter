@@ -40,11 +40,15 @@ export default {
   props: {
     value: {
       required: true
+    },
+    resource: {
+      type: String,
+      required: true,
     }
   },
   data() {
     return {
-      form: {},
+      form: this.value,
       isOpen: false
     };
   },
@@ -54,33 +58,38 @@ export default {
     },
     isEditing() {
       return this.form?.id > 0;
+    },
+    isProcessing() {
+      return this.form?.processing ?? false;
     }
   },
   methods: {
     closeModal: function () {
+      this.$emit('close');
       this.isOpen = false;
     },
-    openModal: function (data) {
-      this.form = Object.assign({}, data);
+    openModal: function () {
       this.isOpen = true;
     },
     save: function () {
-      console.log(this.formData);
-      // this.reset();
-      // if (this.isEditing) {
-    //   //   this.$inertia.post('/categories', this.form)
-    //   // } else {
-    //   //   this.$inertia.post('/categories/' + this.form.id, this.form)
-    //   // }
-      this.closeModal();
+      this.form.clearErrors();
+      this.form.submit(
+        (this.isEditing ? 'patch' : 'post'),
+        `/${this.resource}/${this.form.id}`,
+        {
+          onSuccess: (page) => this.closeModal()
+        }
+      );
     }
   },
   watch: {
-    value(newValue) {
-      console.log('watch');
-      console.log(newValue);
-      newValue ? this.openModal(newValue) : this.closeModal();
-      this.$emit('input', this.value);
+    value: {
+      handler: function(newValue) {// Must use function to preserve "this"
+        this.form = newValue;
+        newValue && Object.keys(newValue).length ? this.openModal(newValue) : this.closeModal();
+        this.$emit('input', this.value);
+      },
+      deep: true
     }
   }
 }

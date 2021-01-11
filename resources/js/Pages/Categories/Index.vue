@@ -14,7 +14,7 @@
         <tbody>
           <tr v-for="category in categories" v-bind:key="category.id">
             <td class="p-2 border-gray-300 border-t">{{ category.name }}</td>
-            <td class="p-2 border-gray-300 border-t">
+            <td class="p-2 border-gray-300 border-t text-right">
               <button class="rounded-md border border-gray-300 px-4 py-2 cursor-pointer bg-blue-700 hover:bg-blue-400 text-gray-200 shadow-sm hover:text-gray-800 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150" @click="showCategoryModal(category)">Edit</button>
             </td>
           </tr>
@@ -35,7 +35,7 @@
       CategoryModal,
     },
     props: {
-      categories: Array,
+      categories: Array
     },
     data() {
       return {
