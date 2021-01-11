@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
@@ -80,7 +80,7 @@ class CategoryController extends Controller
     {
         // sleep(5);
         $category->update(
-            $request->validate([
+            Request::validate([
                 'name' => ['required', 'min:2', 'max:128']
             ])
         );
