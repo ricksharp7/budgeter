@@ -1,6 +1,6 @@
 # Global settings
 ARG PHP_VERSION=7.4
-ARG NODE_VERSION=11
+ARG NODE_VERSION=12
 ARG NGINX_VERSION=1.17
 
 FROM php:${PHP_VERSION}-fpm-alpine AS laravelapp_php
