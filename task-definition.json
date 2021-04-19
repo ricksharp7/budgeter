@@ -55,6 +55,34 @@
                 {
                     "name": "APP_KEY",
                     "valueFrom": "laravelapp_app_key"
+                },
+                {
+                    "name": "APP_URL",
+                    "valueFrom": "laravelapp_app_url"
+                },
+                {
+                    "name": "DB_CONNECTION",
+                    "valueFrom": "laravelapp_db_connection"
+                },
+                {
+                    "name": "DB_DATABASE",
+                    "valueFrom": "laravelapp_db_database"
+                },
+                {
+                    "name": "DB_HOST",
+                    "valueFrom": "laravelapp_db_host"
+                },
+                {
+                    "name": "DB_PASSWORD",
+                    "valueFrom": "laravelapp_db_password"
+                },
+                {
+                    "name": "DB_PORT",
+                    "valueFrom": "laravelapp_db_port"
+                },
+                {
+                    "name": "DB_USERNAME",
+                    "valueFrom": "laravelapp_db_username"
                 }
             ],
             "essential": true

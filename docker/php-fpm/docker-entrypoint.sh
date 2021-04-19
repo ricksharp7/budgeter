@@ -17,7 +17,7 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'bin/console' ]; then
 
     if [ "$(ls -A database/migrations/*.php 2> /dev/null)" ]; then
         echo "Migrations..."
-        #php artisan migrate --force
+        php artisan migrate --force
     fi
 
     # Queue worker
