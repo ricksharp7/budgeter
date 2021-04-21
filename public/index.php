@@ -48,6 +48,8 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 
 $kernel = $app->make(Kernel::class);
 
+dd(scandir('/srv/laravelapp/public'), public_path('/mix-manifest.json'));
+
 $response = tap($kernel->handle(
     $request = Request::capture()
 ))->send();
