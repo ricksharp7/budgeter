@@ -88,7 +88,7 @@ RUN set -eux; \
         gcc \
         git \
         make \
-        python \
+        py-pip \
     ;
 RUN set -eux; \
     yarn install; \
