@@ -38,7 +38,7 @@ RUN set -eux; \
 RUN set -eux; \
 	yarn run production
 
-RUN ls /srv/laravelapp/public
+# RUN ls /srv/laravelapp/public
 
 #
 # Stage 3 - Build PHP server
@@ -107,7 +107,7 @@ COPY docker/php-fpm/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 # Grab the compiled JS/CSS files
 COPY --from=nodejs /srv/laravelapp/public public/
-RUN ls /srv/laravelapp/public
+# RUN ls /srv/laravelapp/public
 RUN cat /srv/laravelapp/public/mix-manifest.json
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
