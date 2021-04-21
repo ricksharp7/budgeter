@@ -48,16 +48,16 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --target laravelapp_php .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-      - name: "Build, tag, push image: nodejs"
-        id: build-image-nodejs
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: budgeter-nodejs
-          IMAGE_TAG: latest
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --target laravelapp_nodejs .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+      # - name: "Build, tag, push image: nodejs"
+      #   id: build-image-nodejs
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     ECR_REPOSITORY: budgeter-nodejs
+      #     IMAGE_TAG: latest
+      #   run: |
+      #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --target laravelapp_nodejs .
+      #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      #     echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
       - name: "Render task definition: nginx"
         id: task-def-nginx
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -74,18 +74,18 @@ jobs:
           container-name: php-fpm
           image: ${{ steps.build-image-php-fpm.outputs.image }}
 
-      - name: "Render task definition: nodejs"
-        id: task-def-nodejs
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def-php-fpm.outputs.task-definition }}
-          container-name: nodejs
-          image: ${{ steps.build-image-nodejs.outputs.image }}
+      # - name: "Render task definition: nodejs"
+      #   id: task-def-nodejs
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: ${{ steps.task-def-php-fpm.outputs.task-definition }}
+      #     container-name: nodejs
+      #     image: ${{ steps.build-image-nodejs.outputs.image }}
 
       - name: "Deploy Amazon ECS task definition"
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: ${{ steps.task-def-nodejs.outputs.task-definition }}
+          task-definition: ${{ steps.task-def-php-fpm.outputs.task-definition }}
           service: laravel-app-service
           cluster: laravel-app
           wait-for-service-stability: false

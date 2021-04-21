@@ -86,25 +86,6 @@
                 }
             ],
             "essential": true
-        },
-        {
-            "name": "nodejs",
-            "image": "",
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": "laravelapp-nodejs",
-                    "awslogs-region": "eu-west-2",
-                    "awslogs-stream-prefix": "laravel-backend-app"
-                }
-            },
-            "dependsOn": [
-                {
-                    "containerName": "php-fpm",
-                    "condition": "START"
-                }
-            ],
-            "essential": true
         }
     ],
     "executionRoleArn": "ecsTaskExecutionRole",

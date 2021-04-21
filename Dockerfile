@@ -81,13 +81,7 @@ RUN set -eux; \
 COPY docker/php-fpm/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["php-fpm"]
-
-FROM node:${NODE_VERSION}-alpine AS laravelapp_nodejs
-
-WORKDIR /srv/laravelapp
-
+###
 RUN set -eux; \
     apk add --no-cache --virtual .build-deps \
         g++ \
@@ -96,22 +90,46 @@ RUN set -eux; \
         make \
         python \
     ;
-
-# prevent the reinstallation of vendors at every changes in the source code
-COPY package.json yarn.lock webpack.mix.js ./
-COPY resources/ ./resources/
 RUN set -eux; \
     yarn install; \
     yarn cache clean;
 
 RUN set -eux; \
-	npm run prod
+    yarn run production;
+###
 
-COPY docker/nodejs/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["yarn", "watch"]
+CMD ["php-fpm"]
+
+# FROM node:${NODE_VERSION}-alpine AS laravelapp_nodejs
+
+# WORKDIR /srv/laravelapp
+
+# RUN set -eux; \
+#     apk add --no-cache --virtual .build-deps \
+#         g++ \
+#         gcc \
+#         git \
+#         make \
+#         python \
+#     ;
+
+# prevent the reinstallation of vendors at every changes in the source code
+# COPY package.json yarn.lock webpack.mix.js ./
+# COPY resources/ ./resources/
+# RUN set -eux; \
+#     yarn install; \
+#     yarn cache clean;
+
+# RUN set -eux; \
+# 	yarn run production
+
+# COPY docker/nodejs/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+# RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# ENTRYPOINT ["docker-entrypoint.sh"]
+# CMD ["yarn", "watch"]
 
 # NGINX
 FROM nginx:${NGINX_VERSION}-alpine AS laravelapp_nginx
@@ -121,4 +139,4 @@ COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/
 WORKDIR /srv/laravelapp
 
 COPY --from=laravelapp_php /srv/laravelapp/public public/
-COPY --from=laravelapp_nodejs /srv/laravelapp/public public/
+# COPY --from=laravelapp_nodejs /srv/laravelapp/public public/
