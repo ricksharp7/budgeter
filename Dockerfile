@@ -14,8 +14,6 @@ WORKDIR /srv/laravelapp
 COPY composer.json composer.json
 COPY composer.lock composer.lock
 
-RUN ls /srv/laravelapp
-
 RUN composer install \
     --ignore-platform-reqs \
     --no-interaction \
@@ -96,6 +94,8 @@ WORKDIR /srv/laravelapp
 
 COPY . ./
 
+COPY --from=vendor /srv/laravelapp/vendor/ ./vendor/
+
 # build for production
 ARG APP_ENV=production
 
@@ -107,8 +107,6 @@ COPY docker/php-fpm/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 # Grab the comppiled JS/CSS files
 COPY --from=nodejs /srv/laravelapp/public public/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-RUN ls /srv/laravelapp;
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]
