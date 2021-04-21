@@ -104,8 +104,11 @@ RUN set -eux; \
 
 COPY docker/php-fpm/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-# Grab the comppiled JS/CSS files
+# Grab the compiled JS/CSS files
 COPY --from=nodejs /srv/laravelapp/public public/
+RUN ls /srv/laravelapp/public
+RUN cat /srv/laravelapp/public/mix-manifest.json
+
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
