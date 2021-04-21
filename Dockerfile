@@ -29,8 +29,7 @@ FROM node:${NODE_VERSION}-alpine AS nodejs
 
 WORKDIR /srv/laravelapp
 
-COPY package.json yarn.lock webpack.mix.js ./
-COPY resources/ ./resources/
+COPY . ./
 
 RUN set -eux; \
     yarn install; \
@@ -39,6 +38,7 @@ RUN set -eux; \
 RUN set -eux; \
 	yarn run production
 
+RUN ls /srv/laravelapp/public
 
 #
 # Stage 3 - Build PHP server
@@ -74,6 +74,7 @@ RUN set -eux; \
         intl \
         pdo_mysql \
         zip \
+        > /dev/null \
     ; \
     \
     runDeps="$( \
