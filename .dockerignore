@@ -1,6 +1,12 @@
 .git/
-vendor/
+.github/
 node_modules/
-public/js/
-public/css/
+tests/
+DOCKERFILE
+docker-compose.yml
+notes.md
+phpcs.xml
+phpunit.xml
+README.md
+server.php
 yarn-error.log

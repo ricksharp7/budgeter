@@ -2,7 +2,49 @@
 ARG PHP_VERSION=7.4
 ARG NODE_VERSION=12
 ARG NGINX_VERSION=1.17
+ARG COMPOSER_VERSION=2
 
+#
+# Stage 1 - PHP Dependencies
+#
+FROM composer:${COMPOSER_VERSION} as vendor
+
+WORKDIR /srv/laravelapp
+
+COPY composer.json composer.json
+COPY composer.lock composer.lock
+
+RUN ls /srv/laravelapp
+
+RUN composer install \
+    --ignore-platform-reqs \
+    --no-interaction \
+    --no-plugins \
+    --no-scripts \
+    --prefer-dist
+
+
+#
+# Stage 2 - Build front end
+#
+FROM node:${NODE_VERSION}-alpine AS nodejs
+
+WORKDIR /srv/laravelapp
+
+COPY package.json yarn.lock webpack.mix.js ./
+COPY resources/ ./resources/
+
+RUN set -eux; \
+    yarn install; \
+    yarn cache clean;
+
+RUN set -eux; \
+	yarn run production
+
+
+#
+# Stage 3 - Build PHP server
+#
 FROM php:${PHP_VERSION}-fpm-alpine AS laravelapp_php
 
 # persistent / runtime deps
@@ -11,10 +53,8 @@ RUN apk add --no-cache \
         file \
         gettext \
         git \
-        mariadb-client \
     ;
 
-ARG APCU_VERSION=5.1.17
 RUN set -eux; \
     apk add --no-cache --virtual .build-deps \
         $PHPIZE_DEPS \
@@ -37,14 +77,6 @@ RUN set -eux; \
         pdo_mysql \
         zip \
     ; \
-    pecl install \
-        apcu-${APCU_VERSION} \
-    ; \
-    pecl clear-cache; \
-    docker-php-ext-enable \
-        apcu \
-        opcache \
-    ; \
     \
     runDeps="$( \
         scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
@@ -56,64 +88,34 @@ RUN set -eux; \
     \
     apk del .build-deps
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY docker/php-fpm/php.ini /usr/local/etc/php/php.ini
 COPY docker/php-fpm/php-cli.ini /usr/local/etc/php/php-cli.ini
 COPY docker/php-fpm/zz-docker.conf /usr/local/etc/php-fpm.d/zzz-docker.conf
 
-# https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
-ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV PATH="${PATH}:/root/.composer/vendor/bin"
-
 WORKDIR /srv/laravelapp
+
+COPY . ./
 
 # build for production
 ARG APP_ENV=production
 
-# copy everything, excluding the one from .dockerignore file
-COPY . ./
-
 RUN set -eux; \
-    mkdir -p storage/logs storage/framework bootstrap/cache; \
-    composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader; \
-    composer clear-cache
+    mkdir -p storage/logs storage/framework bootstrap/cache;
 
 COPY docker/php-fpm/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+# Grab the comppiled JS/CSS files
+COPY --from=nodejs /srv/laravelapp/public public/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+RUN ls /srv/laravelapp;
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]
 
-FROM node:${NODE_VERSION}-alpine AS laravelapp_nodejs
-
-WORKDIR /srv/laravelapp
-
-RUN set -eux; \
-    apk add --no-cache --virtual .build-deps \
-        g++ \
-        gcc \
-        git \
-        make \
-        python \
-    ;
-
-# prevent the reinstallation of vendors at every changes in the source code
-COPY package.json yarn.lock webpack.mix.js ./
-COPY resources/ ./resources/
-RUN set -eux; \
-    yarn install; \
-    yarn cache clean;
-
-RUN set -eux; \
-	yarn run production
-
-COPY docker/nodejs/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["yarn", "watch"]
-
-# NGINX
+#
+# Stage 4 - Build NGINX server
+#
 FROM nginx:${NGINX_VERSION}-alpine AS laravelapp_nginx
 
 COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/
@@ -121,4 +123,3 @@ COPY docker/nginx/conf.d/default.conf /etc/nginx/conf.d/
 WORKDIR /srv/laravelapp
 
 COPY --from=laravelapp_php /srv/laravelapp/public public/
-COPY --from=laravelapp_nodejs /srv/laravelapp/public public/
