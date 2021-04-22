@@ -13,7 +13,7 @@ phases:
     commands:
     - echo Logging in to Amazon ECR....
     - aws --version
-    - eval $(aws ecr get-login --region eu-west-1 --no-include-email | sed 's|https://||')
+    - eval $(aws ecr get-login --region eu-west-2 --no-include-email | sed 's|https://||')
     - REPOSITORY_URI_PHP=046756490856.dkr.ecr.eu-west-2.amazonaws.com/budgeter-cp-php-fpm
     - IMAGE_TAG_PHP=latest
     - REPOSITORY_URI_NGINX=046756490856.dkr.ecr.eu-west-2.amazonaws.com/budgeter-cp-nginx
