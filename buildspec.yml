@@ -15,7 +15,7 @@ phases:
     - IMAGE_TAG_PHP=latest
     - REPOSITORY_URI_NGINX=046756490856.dkr.ecr.eu-west-2.amazonaws.com/budgeter-cp-nginx
     - IMAGE_TAG_PHP=latest
-    - cp .env.cp .env
+    - cp .env.ci .env
   build:
     commands:
     - echo Build started on `date`
