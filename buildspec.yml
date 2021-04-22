@@ -17,14 +17,14 @@ phases:
     - REPOSITORY_URI_PHP=046756490856.dkr.ecr.eu-west-2.amazonaws.com/budgeter-cp-php-fpm
     - IMAGE_TAG_PHP=latest
     - REPOSITORY_URI_NGINX=046756490856.dkr.ecr.eu-west-2.amazonaws.com/budgeter-cp-nginx
-    - IMAGE_TAG_PHP=latest
+    - IMAGE_TAG_NGINX=latest
     - cp .env.ci .env
   build:
     commands:
     - echo Build started on `date`
     - echo Building the NGINX Docker image...
     - docker build --target laravelapp_nginx -t $REPOSITORY_URI_NGINX:latest .
-    - docker tag $REPOSITORY_URI_NGINX:latest $REPOSITORY_URI_NGINX:$IMAGE_TAG_PHP
+    - docker tag $REPOSITORY_URI_NGINX:latest $REPOSITORY_URI_NGINX:$IMAGE_TAG_NGINX
     - echo Building the PHP Docker image...
     - docker build --target laravelapp_php -t $REPOSITORY_URI_PHP:latest .
     - docker tag $REPOSITORY_URI_PHP:latest $REPOSITORY_URI_PHP:$IMAGE_TAG_PHP
