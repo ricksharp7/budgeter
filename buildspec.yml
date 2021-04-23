@@ -25,10 +25,13 @@ phases:
     - echo Logging in to Amazon ECR....
     - aws --version
     - eval $(aws ecr get-login --region eu-west-2 --no-include-email | sed 's|https://||')
+    - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
     - REPOSITORY_URI_PHP=046756490856.dkr.ecr.eu-west-2.amazonaws.com/budgeter-cp-php-fpm
     - IMAGE_TAG_PHP=latest
+    - IMAGE_TAG_PHP=${COMMIT_HASH:=latest}
     - REPOSITORY_URI_NGINX=046756490856.dkr.ecr.eu-west-2.amazonaws.com/budgeter-cp-nginx
-    - IMAGE_TAG_NGINX=latest
+    - IMAGE_TAG_NGINX=${COMMIT_HASH:=latest}
+    # - IMAGE_TAG_NGINX=latest
     - cp .env.ci .env
   build:
     commands:
@@ -39,16 +42,15 @@ phases:
     - echo Building the PHP Docker image...
     - docker build --target laravelapp_php -t $REPOSITORY_URI_PHP:latest .
     - docker tag $REPOSITORY_URI_PHP:latest $REPOSITORY_URI_PHP:$IMAGE_TAG_PHP
-    artefacts:
-      files:
-        - '**/*'
-      base-directory: base_location
-      name: BuildArtefact
-      discard-paths: no
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker image ls -a
       - docker push $REPOSITORY_URI_NGINX:$IMAGE_TAG_NGINX
-      - docker push $REPOSITORY_URI_PHP:$IMAGE_TAG_PHP 
+      - docker push $REPOSITORY_URI_PHP:$IMAGE_TAG_PHP
+artifacts:
+  files:
+    - '**/*'
+  name: BuildArtefact
+  discard-paths: no
