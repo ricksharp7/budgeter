@@ -16,7 +16,7 @@ env:
 phases:
   install: 
     runtime-versions:
-      php: 7.4
+      php: 7.3
       nodejs: 12
   pre_build:
     commands:
