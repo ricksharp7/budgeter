@@ -1,0 +1,33 @@
+version: 0.2
+
+env:
+  shell: bash
+  # parameter-store:
+    # APP_DEBUG: "laravelapp_app_debug"
+    # APP_ENV: "laravelapp_app_env"
+    # APP_KEY: "laravelapp_app_key"
+    # APP_URL: "laravelapp_app_url"
+    # DB_CONNECTION: "laravelapp_db_connection"
+    # DB_DATABASE: "laravelapp_db_database"
+    # DB_HOST: "laravelapp_db_host"
+    # DB_PASSWORD: "laravelapp_db_password"
+    # DB_PORT: "laravelapp_db_port"
+    # DB_USERNAME: "laravelapp_db_username"
+phases:
+  install: 
+    runtime-versions:
+      php: 7.3
+  pre_build:
+    commands:
+    - cp .env.testing .env
+  build:
+    commands:
+    - echo Installing packages
+    - composer install
+    - echo Running Unit Tests
+    - php artisan test
+    - echo Running Dusk Tests
+    - php artisan dusk
+  post_build:
+    commands:
+      - echo Build completed on `date`
