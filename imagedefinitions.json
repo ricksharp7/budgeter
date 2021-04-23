@@ -1,0 +1,10 @@
+[
+    {
+        "name": "nginx",
+        "imageUri": "046756490856.dkr.ecr.eu-west-2.amazonaws.com/budgeter-cp-nginx:latest"
+    },
+    {
+        "name"; "php-fpm",
+        "imageUri": "046756490856.dkr.ecr.eu-west-2.amazonaws.com/budgeter-cp-php-fpm:latest"
+    }
+]
