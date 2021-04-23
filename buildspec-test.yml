@@ -30,8 +30,6 @@ phases:
     commands:
     - echo Running Unit Tests
     - php artisan test
-    - echo Running Dusk Tests
-    - php artisan dusk
   post_build:
     commands:
       - echo Build completed on `date`
