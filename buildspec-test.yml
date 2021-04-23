@@ -16,14 +16,18 @@ env:
 phases:
   install: 
     runtime-versions:
-      php: 7.3
+      php: 7.4
+      nodejs: 12
   pre_build:
     commands:
     - cp .env.testing .env
-  build:
-    commands:
+    - npm install --global yarn
+    - yarn install
+    - yarn run production
     - echo Installing packages
     - composer install
+  build:
+    commands:
     - echo Running Unit Tests
     - php artisan test
     - echo Running Dusk Tests
